@@ -4,5 +4,8 @@ set -e
 
 npm install
 export PATH="node_modules/.bin:node_modules/hubot/node_modules/.bin:$PATH"
+# export HUBOT_AUTH_ADMIN 175501,180122,186726,1959364,3098762
+export HUBOT_WOLFRAM_APPID=RHW777-29T6XUG4K7
+export HUBOT_VERSION="$(./node_modules/.bin/hubot --version)"
 
-exec node_modules/.bin/hubot --name "karmabot" "$@"
+exec node_modules/.bin/hubot --name "hubot" "$@"
