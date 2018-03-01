@@ -10,10 +10,10 @@
 
 module.exports = (robot) ->
   botname = process.env.HUBOT_SLACK_BOTNAME
-  plusplus_re = /@([a-z0-9_\-\.]+)\+{2,}/ig
-  minusminus_re = /@([a-z0-9_\-\.]+)\-{2,}/ig
-  plusplus_minusminus_re = /@([a-z0-9_\-\.]+)[\+\-]{2,}/ig
-  
+  plusplus_re = /@([a-z0-9_\-\.]+)\s?\+{2,}/ig
+  minusminus_re = /@([a-z0-9_\-\.]+)\s?\-{2,}/ig
+  plusplus_minusminus_re = /@([a-z0-9_\-\.]+)\s?[\+\-]{2,}/ig
+
   robot.hear plusplus_minusminus_re, (msg) ->
      sending_user = msg.message.user.name
      res = ''
