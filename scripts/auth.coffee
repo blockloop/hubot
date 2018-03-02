@@ -91,7 +91,7 @@ module.exports = (robot) ->
         else
           msg.reply "Only admins can assign roles. You're #{msg.message.user.id}"
 
-  robot.respond /what role(s?) does (.+) have\?*$/i, (msg) ->
+  robot.respond /(?:what|which) role(s?) does @?(.+) have\?*$/i, (msg) ->
     name = msg.match[2].trim()
     user = robot.brain.userForName(name)
     return msg.reply "#{name} does not exist" unless user?
