@@ -98,9 +98,9 @@ module.exports = (robot) ->
     user.roles or= []
 
     if user.id.toString() in admins
-      msg.reply "#{user.name} has admin role and thus has all the roles (allthethings)"
+      msg.reply "#{user.name} has admin role and thus has all the roles :all_the_things: "
     else if user.roles.length is 0
-      msg.reply "#{user.name} doesn't have any roles (foreveralone)."
+      msg.reply "#{user.name} doesn't have any roles :forever_alone:."
     else
       msg.reply "#{user.name} has the following roles: #{user.roles.join(', ')}."
 
