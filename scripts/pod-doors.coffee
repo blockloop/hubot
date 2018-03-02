@@ -5,7 +5,7 @@
 #   auth
 #
 # Commands:
-#   hal open the pod doors
+#   hubot open the pod doors
 #
 
 module.exports = (robot) ->
@@ -13,7 +13,7 @@ module.exports = (robot) ->
     msg.reply "Affirmative, I read you."
   robot.respond /Open the pod bay doors/i, (msg) ->
     msg.reply "I'm sorry, I'm afraid I can't do that."
-  robot.respond /What's the problem/i, (msg) ->
+  robot.respond /What'?s the problem/i, (msg) ->
     msg.reply "I think you know what the problem is just as well as I do."
   robot.respond /What are you talking about/i, (msg) ->
     msg.reply "This mission is too important for me to allow you to jeopardize it."
