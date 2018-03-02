@@ -18,34 +18,41 @@
 
 module.exports = (robot) ->
   robot.respond /xkcd(\s+latest)?$/i, (msg) ->
-    robot.http("http://xkcd.com/info.0.json")
+    robot.http("https://xkcd.com/info.0.json")
       .get() (err, res, body) ->
-        if res.statusCode == 404
+        if err
+          robot.emit 'error', "Error from HTTP: #{err}"
+        else if res.statusCode == 404
           msg.send 'Comic not found.'
-        else
+        else if body
           object = JSON.parse(body)
           msg.send object.title, object.img, object.alt
+        else
+          robot.emit 'error', "bad status code from http: (#{res.statusCode})"
+        msg.finish()
 
   robot.respond /xkcd\s+(\d+)/i, (msg) ->
     num = "#{msg.match[1]}"
 
-    robot.http("http://xkcd.com/#{num}/info.0.json")
+    robot.http("https://xkcd.com/#{num}/info.0.json")
       .get() (err, res, body) ->
         if res.statusCode == 404
           msg.send 'Comic #{num} not found.'
         else
+          robot.emit 'error', body
           object = JSON.parse(body)
           msg.send object.title, object.img, object.alt
 
   robot.respond /xkcd\s+random/i, (msg) ->
-    robot.http("http://xkcd.com/info.0.json")
+    robot.http("https://xkcd.com/info.0.json")
           .get() (err,res,body) ->
             if res.statusCode == 404
                max = 0
             else
-               max = JSON.parse(body).num 
+               robot.emit 'error', body
+               max = JSON.parse(body).num
                num = Math.floor((Math.random()*max)+1)
-               robot.http("http://xkcd.com/#{num}/info.0.json")
+               robot.http("https://xkcd.com/#{num}/info.0.json")
                .get() (err, res, body) ->
                  object = JSON.parse(body)
                  msg.send object.title, object.img, object.alt
