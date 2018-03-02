@@ -108,7 +108,7 @@ module.exports = (robot) ->
     adminNames = []
     for admin in admins
       user = robot.brain.userForId(admin)
-      adminNames.push(user.name) if user?
+      adminNames.push("#{user.real_name} (@#{user.name})") if user?
 
     msg.reply "The following people have the 'admin' role: #{adminNames.join(', ')}"
 
