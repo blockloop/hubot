@@ -1,5 +1,5 @@
 module.exports = function(robot) {
-	robot.respond(/say (.+) in (#[^\s]+)/i, (msg) => {
+	robot.respond(/say (.+) in (.+)/i, (msg) => {
 		const say = msg.match[1];
 		const room = msg.match[2];
 
@@ -9,6 +9,7 @@ module.exports = function(robot) {
 			return false;
 		}
 
+		robot.logger.error(`was told to say ${say} to room ${room}. Envelope: ${msg.envelope}`);
 		msg.reply(`Sending "${say}" to ${room}`);
 		return robot.messageRoom(room, say);
 	});
