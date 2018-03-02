@@ -2,7 +2,7 @@
 #   Calculate the average Sentimental / happiness score for each person based on their spoken words
 #
 # Dependencies:
-#   "Sentimental": "0.0.4"
+#   "Sentimental": "1.0.1"
 #
 # Configuration:
 #

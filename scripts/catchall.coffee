@@ -4,7 +4,7 @@
 #   key is registered to dl-dev-team@onetechnologies.net.
 #
 # Dependencies:
-#   "Sentimental": "0.0.4"
+#   "Sentimental": "1.0.1"
 #
 # Configuration:
 #   CLEVERBOT_IO_API_USER
@@ -14,12 +14,11 @@
 #
 #
 # Author:
-#   Brett Jones
+#   blockloop
 #
 # URLS:
 #
 #
-
 apiuser = process.env.CLEVERBOT_IO_API_USER
 apikey = process.env.CLEVERBOT_IO_API_KEY
 if apiuser? and apikey?
