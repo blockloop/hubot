@@ -9,7 +9,7 @@
 #
 # Commands:
 #   hubot what is your os [hostname,loadavg,uptime,freemem,totalmem,cpus,type,release,networkInterfaces,arch,platform,tmpDir]?
-#   hubot what is your [name,version,deal]?
+#   hubot what is your [name,version,deal,problem]?
 #
 # Author:
 #   Brett Jones
