@@ -15,4 +15,4 @@
 
 module.exports = (robot) ->
   robot.respond /(whoami|who am i)/i, (msg) ->
-    msg.reply(JSON.stringify(msg.message.user, true))
+    msg.reply("```\nJSON.stringify(msg.message.user, true)\n```")

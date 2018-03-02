@@ -46,10 +46,10 @@ negativity = sentimental.negativity
 
 module.exports = (robot) ->
   robot.catchAll (msg) ->
-    r = new RegExp "^(#{robot.alias}|#{robot.name})(.*)", "i"
+    r = new RegExp("@?(#{robot.alias}|#{robot.name})", "ig")
     atMe = msg.message.text?.match(r)?.length
     if atMe?
-      try query = msg.message.text.match(r)[2].trim()
+      try query = msg.message.text.replace(r, "you").trim()
     else
       try query = msg.message.text.trim()
 
