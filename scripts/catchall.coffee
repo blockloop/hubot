@@ -7,7 +7,8 @@
 #   "Sentimental": "0.0.4"
 #
 # Configuration:
-#   HUBOT_WOLFRAM_APPID
+#   CLEVERBOT_IO_API_USER
+#   CLEVERBOT_IO_API_KEY
 #
 # Commands:
 #
@@ -19,16 +20,24 @@
 #
 #
 
-appid = process.env.HUBOT_WOLFRAM_APPID
-if appid?
-  console.log("Using wolfram alpha with APPID: #{appid}")
+apiuser = process.env.CLEVERBOT_IO_API_USER
+apikey = process.env.CLEVERBOT_IO_API_KEY
+if apiuser? and apikey?
+  console.log("Using cleverbot.io with API_USER: #{apiuser}")
 else
-  console.error("HUBOT_WOLFRAM_APPID is not set")
+  console.error("CLEVERBOT_IO_API_KEY and CLEVERBOT_IO_API_USER must be set to use cleverbot")
   return
 
-Cleverbot = require("cleverbot-node")
-cleverbot = new Cleverbot
-cleverbot.configure({botapi: appid})
+cleverbotready = false
+
+cleverbot = require('cleverbot.io')
+bot = new cleverbot(apiuser, apikey);
+bot.setNick("hubot")
+bot.create (err, res) ->
+  if err
+    console.error "cleverbot init error: #{res}"
+  else
+    cleverbotready = true
 
 sentimental = require('Sentimental')
 analyze = sentimental.analyze
@@ -53,15 +62,13 @@ module.exports = (robot) ->
 
     store(robot, username, analysis)
 
+    return unless cleverbotready
     return unless atMe?
-    console.log(JSON.stringify(cleverbot))
-    cleverbot.write query, (res, err) ->
-      if err?
-        robot.emit 'error', err
-      else if res.error?
-        robot.emit 'error', res.error
+    bot.ask query, (err, res) ->
+      if err
+        robot.emit 'error', "cleverbot error: #{res}"
       else
-        msg.reply(res.output)
+        msg.reply(res)
       msg.finish()
 
 

@@ -9,7 +9,7 @@
 #
 # Commands:
 #   hubot what is your os [hostname,loadavg,uptime,freemem,totalmem,cpus,type,release,networkInterfaces,arch,platform,tmpDir]?
-#   hubot what is your [name,version]?
+#   hubot what is your [name,version,deal]?
 #
 # Author:
 #   Brett Jones
@@ -46,11 +46,12 @@ checkCustom = (q, msg) ->
     return true
 
   if q == 'name'
-    return done("My name is Heuristically programmed ALgorithmic computer, but you can call me Hal")
+    return done("My name is #{robot.name}")
+  if q == 'deal' || q == 'problem'
+    return done("@justin abused me")
   if q == 'version'
-    v = process.env.HUBOT_VERSION
-    if v?
-      return done("My version is #{v}")
+    v = process.env.HUBOT_VERSION or "unknown"
+    return done("My version is #{v}")
 
   return false
 
