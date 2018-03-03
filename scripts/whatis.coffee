@@ -14,6 +14,7 @@
 # Author:
 #   Brett Jones
 os = require('os')
+start = new Date()
 
 module.exports = (robot) ->
   robot.respond /what (is|are) your (\w+)\??/i, (msg) ->
@@ -21,10 +22,11 @@ module.exports = (robot) ->
 
     return if checkCustom(query, msg)
 
-    try result = os[query]()
+    if query is "uptime"
+      result = prettyUptime((new Date() - start))
+    else
+      try result = os[query]()
     if result
-      if query is "uptime"
-        result = prettyUptime(result)
       if typeof(result) is "object"
         result = JSON.stringify(result)
       msg.send "My #{query} #{msg.match[1]} #{result}"
@@ -58,10 +60,6 @@ checkCustom = (q, msg) ->
   return false
 
 prettyUptime = (seconds) =>
-  pad = (s) ->
-    (s < 10 ? '0' : '') + s
-  hours = Math.floor(seconds / (60*60))
-  minutes = Math.floor(seconds % (60*60) / 60)
-  seconds = Math.floor(seconds % 60)
-
-  return "#{pad(hours)}h#{pad(minutes)}m#{pad(seconds)}s"
+  date = new Date(null)
+  date.setSeconds(seconds/1000)
+  date.toISOString().substr(11, 8);
