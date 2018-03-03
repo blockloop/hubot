@@ -23,6 +23,8 @@ module.exports = (robot) ->
 
     try result = os[query]()
     if result
+      if query is "uptime"
+        result = prettyUptime(result)
       if typeof(result) is "object"
         result = JSON.stringify(result)
       msg.send "My #{query} #{msg.match[1]} #{result}"
@@ -55,3 +57,11 @@ checkCustom = (q, msg) ->
 
   return false
 
+prettyUptime = (seconds) =>
+  pad = (s) ->
+    (s < 10 ? '0' : '') + s
+  hours = Math.floor(seconds / (60*60))
+  minutes = Math.floor(seconds % (60*60) / 60)
+  seconds = Math.floor(seconds % 60)
+
+  return "#{pad(hours)}h#{pad(minutes)}m#{pad(seconds)}s"
