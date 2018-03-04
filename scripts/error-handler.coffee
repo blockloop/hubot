@@ -2,7 +2,7 @@
 #   error handler for unhandled errors
 #
 # Dependencies:
-#   "Util": "*"
+#   None
 #
 # Configuration:
 #   None
@@ -11,13 +11,8 @@
 #
 #
 # Author:
-#   Brett Jones
+#   blockloop
 #
-# URLS:
-#
-
-Util = require('util')
-
 module.exports = (robot) ->
   robot.error (err, msg) ->
     msg.send(err.stack) if msg?
