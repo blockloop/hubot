@@ -18,7 +18,6 @@
 //
 const apiKey = process.env.HUBOT_DARK_SKY_API_KEY || "";
 const defaultLocation = process.env.HUBOT_DARK_SKY_DEFAULT_LOCATION || "Dallas";
-
 const googleurl = "http://maps.googleapis.com/maps/api/geocode/json";
 const errNoAPIKey = new Error("HUBOT_DARK_SKY_API_KEY is not configured");
 
@@ -29,25 +28,7 @@ module.exports = function(robot) {
 		}
 
 		const location = msg.match[1] || defaultLocation;
-		const q = {
-			sensor: false,
-			address: location
-		};
-		msg.http(googleurl).query(q).get()((err, res, body) => {
-			if (err) {
-				throw new Error(`HTTP Error: ${err}`);
-			}
-			if (res.statusCode > 299) {
-				throw new Error(`HTTP ${res.statusCode}: ${body || err}`);
-			}
-
-			const results = JSON.parse(body).results;
-			if (!results || results.length < 1) {
-				msg.send(`Couldn't find ${location}`);
-				return;
-			}
-			const lat = results[0].geometry.location.lat;
-			const lng = results[0].geometry.location.lng;
+		getLocation(msg, location, (locationName, lat, lng) => {
 			const url = `https://api.darksky.net/forecast/${apiKey}/${lat},${lng}`;
 			msg.http(url).get()((err, res, body) => {
 				if (err) {
@@ -62,7 +43,7 @@ module.exports = function(robot) {
 					throw new Error(result.error);
 				}
 				const lines = [
-					`Currently ${result.currently.summary} ${Math.round(result.currently.temperature)}°F`,
+					`In ${locationName} it's currently ${Math.round(result.currently.temperature)}°F and ${result.currently.summary}`,
 					`${result.hourly.summary}`,
 					`${result.daily.summary}`
 				];
@@ -71,3 +52,28 @@ module.exports = function(robot) {
 		});
 	});
 };
+
+function getLocation(msg, location, cb) {
+	const q = {
+		sensor: false,
+		address: location
+	};
+	msg.http(googleurl).query(q).get()((err, res, body) => {
+		if (err) {
+			throw new Error(`HTTP Error: ${err}`);
+		}
+		if (res.statusCode > 299) {
+			throw new Error(`HTTP ${res.statusCode}: ${body || err}`);
+		}
+
+		const results = JSON.parse(body).results;
+		if (!results || results.length < 1) {
+			msg.send(`Couldn't find ${location}`);
+			return;
+		}
+		const locationName = results[0].formatted_address;
+		const lat = results[0].geometry.location.lat;
+		const lng = results[0].geometry.location.lng;
+		cb(locationName, lat, lng);
+	});
+}
