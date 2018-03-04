@@ -20,7 +20,7 @@ const start = new Date();
 const version = process.env.HUBOT_VERSION || "unknown";
 
 module.exports = function(robot) {
-	return robot.respond(/what (is|are) your (\w+)\??/i, (msg) => {
+	robot.respond(/(?:what|who) (is|are) your (.+)/i, (msg) => {
 		const query = msg.match[2].trim();
 		if (checkCustom(query, robot, msg)) {
 			return;
@@ -42,11 +42,11 @@ module.exports = function(robot) {
 			if (typeof result === "object") {
 				result = JSON.stringify(result, null, 4);
 			}
-			msg.send(`My ${query} ${msg.match[1]} ${result}`);
+			msg.reply(`My ${query} ${msg.match[1]} ${result}`);
 			msg.finish();
 			return;
 		}
-		msg.send(`I don't know. You tell me. Just say ${robot.name} your [key] is [value]`);
+		msg.reply(`I don't know. You tell me. Just say ${robot.name} your [key] is [value]`);
 		msg.finish();
 	});
 };
@@ -61,7 +61,9 @@ function checkCustom(q, robot, msg) {
 		return done(`My name is ${robot.name}`);
 	}
 	if (q === "deal" || q === "problem") {
-		return done("@justin abused me");
+		const opts = ["@justin abused me", "I have night terrors", "I am privileged"];
+		const rand = opts[Math.floor(Math.random() * opts.length)];
+		return done(rand);
 	}
 	if (q === "version") {
 		return done(`My version is ${version}`);
