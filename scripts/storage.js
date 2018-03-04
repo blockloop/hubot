@@ -7,9 +7,11 @@ const util = require("util");
 
 module.exports = function(robot) {
 	robot.respond(/show storage$/i, (msg) => {
-		const codeStart = "```\n";
-		const codeEnd = "\n```";
-		const output = util.inspect(robot.brain.data, false, 4);
-		msg.send(`${codeStart}${output}${codeEnd}`);
+		const codeBlock = "```";
+		const data = Object.assign({}, robot.brain.data);
+		Reflect.deleteProperty(data, "users");
+
+		const output = util.inspect(data, false, 4);
+		msg.send(`${codeBlock}${output}${codeBlock}`);
 	});
 };
