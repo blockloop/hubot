@@ -40,7 +40,7 @@ module.exports = function(robot) {
 			}
 			const resp = JSON.parse(body);
 			if (resp.type === "success" && resp.value.joke) {
-				msg.send(resp.value.joke);
+				msg.send(`:chucknorris: ${resp.value.joke}`);
 				msg.finish();
 				return;
 			}
