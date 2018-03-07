@@ -1,3 +1,5 @@
+// Description:
+//   Tell hubot to say something in a room
 module.exports = function(robot) {
 	robot.respond(/say (.+) in (.+)/i, (msg) => {
 		const say = msg.match[1];
