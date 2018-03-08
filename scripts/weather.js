@@ -24,56 +24,93 @@ const errNoAPIKey = new Error("HUBOT_DARK_SKY_API_KEY is not configured");
 module.exports = function(robot) {
 	robot.respond(/weather ?(.+)?/i, (msg) => {
 		if (apiKey.length === 0) {
-			throw new Error(errNoAPIKey);
+			robot.emit("error", new Error(errNoAPIKey));
+			return;
 		}
 
 		const location = msg.match[1] || defaultLocation;
-		getLocation(msg, location, (locationName, lat, lng) => {
-			const url = `https://api.darksky.net/forecast/${apiKey}/${lat},${lng}`;
-			msg.http(url).get()((err, res, body) => {
-				if (err) {
-					throw new Error(`HTTP Error: ${err}`);
-				}
-				if (res.statusCode > 299) {
-					throw new Error(`HTTP ${res.statusCode}: ${body || err}`);
-				}
-
-				const result = JSON.parse(body);
-				if (result.error) {
-					throw new Error(result.error);
-				}
-				const lines = [
-					`In ${locationName} it's currently ${Math.round(result.currently.temperature)}°F and ${result.currently.summary}`,
-					`${result.hourly.summary}`,
-					`${result.daily.summary}`
-				];
-				msg.send(lines.join("\n"));
-			});
-		});
+		getLocation(msg, location).
+		then((loc) => getWeather(msg, loc)).
+		then(({weather, loc}) => {
+			const lines = [
+				`In ${loc.name} it's currently ${Math.round(weather.currently.temperature)}°F and ${weather.currently.summary}`,
+				`${weather.hourly.summary}`,
+				`${weather.daily.summary}`
+			];
+			msg.send(lines.join("\n"));
+		}).
+		catch((err) => robot.emit("error", err));
 	});
 };
 
-function getLocation(msg, location, cb) {
+/**
+ * getLocation gets the longitude and lattitude for a given zipcode or city
+ * @param {Object} msg
+ * @param {String} location - zipcode or city name
+ * @returns {Promise} - promise that resolves to {name: "Dallas", lat: <lattitude>, lng: <longitude>}
+ */
+function getLocation(msg, location) {
 	const q = {
 		sensor: false,
 		address: location
 	};
-	msg.http(googleurl).query(q).get()((err, res, body) => {
-		if (err) {
-			throw new Error(`HTTP Error: ${err}`);
+	return new Promise((resolve, reject) => {
+		msg.http(googleurl).query(q).get()((err, res, body) => {
+			if (err) {
+				reject(err);
+			} else if (res.statusCode > 299) {
+				reject(new Error(`HTTP ${res.statusCode}: ${body || err}`));
+			} else {
+				resolve(body);
+			}
+		});
+	}).
+	then((body) => JSON.parse(body).results).
+	then((res) => {
+		if (!Array.isArray(res) || res.length < 1) {
+			throw new Error(`Couldn't find ${location}`);
 		}
-		if (res.statusCode > 299) {
-			throw new Error(`HTTP ${res.statusCode}: ${body || err}`);
-		}
+		const locationName = res[0].formatted_address;
+		const lat = res[0].geometry.location.lat;
+		const lng = res[0].geometry.location.lng;
+		return {
+			name: locationName,
+			lat: lat,
+			lng: lng,
+		};
+	});
+}
 
-		const results = JSON.parse(body).results;
-		if (!results || results.length < 1) {
-			msg.send(`Couldn't find ${location}`);
-			return;
+/**
+ * getWeather gets the weather given the provided longitude and latitude
+ * @param {Object} msg - hubot message
+ * @param {Object} loc - the location to get weather for
+ * @param {string} loc.name - the name of the location
+ * @param {string} loc.lat - the lattitude
+ * @param {string} loc.lng - the longitude
+ * @returns {Promise} - promise that resolves to {Object} darksky response
+ */
+function getWeather(msg, loc) {
+	const url = `https://api.darksky.net/forecast/${apiKey}/${loc.lat},${loc.lng}`;
+	return new Promise((resolve, reject) => {
+		msg.http(url).get()((err, res, body) => {
+			if (err) {
+				return reject(err);
+			}
+			if (res.statusCode > 299) {
+				return reject(new Error(`HTTP ${res.statusCode}: ${body || err}`));
+			}
+			return resolve(body);
+		});
+	}).
+	then((body) => JSON.parse(body)).
+	then((result) => {
+		if (result.error) {
+			throw new Error(result.error);
 		}
-		const locationName = results[0].formatted_address;
-		const lat = results[0].geometry.location.lat;
-		const lng = results[0].geometry.location.lng;
-		cb(locationName, lat, lng);
+		return {
+			weather: result,
+			loc: loc,
+		};
 	});
 }
