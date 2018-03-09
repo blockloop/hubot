@@ -4,48 +4,53 @@
 // Commands:
 //   hubot tell me a (dad )joke - Reply with a joke
 //
+
 module.exports = function(robot) {
 	robot.respond(/tell me a (dad )?joke$/i, (msg) => {
-		const run = robot.http("https://icanhazdadjoke.com/")
-			.header("User-Agent", "curl/7.54.0")
-			.header("Accept", "*/*")
-			.get();
-
-		run((err, res, body) => {
-			if (err) {
-				robot.emit("error", `HTTP Error: ${err}`);
-				msg.send(`error: ${err}`);
-			} else if (res.statusCode === 404) {
-				msg.send("Comic not found.");
-			} else if (body) {
-				msg.send(body);
-			} else {
-				throw new Error(`HTTP ${res.statusCode}: ${body || err}`);
-			}
-			msg.finish();
-		});
+		new Promise((resolve) => {
+			robot.http("https://icanhazdadjoke.com/").
+			header("User-Agent", "curl/7.54.0").
+			header("Accept", "*/*").
+			get()((err, res, body) => {
+				if (err) {
+					throw new Error(`HTTP Error: ${err}`);
+				}
+				if (res.statusCode === 404) {
+					return resolve("Comic not found.");
+				}
+				if (res.statusCode > 299) {
+					throw new Error(`HTTP ${res.statusCode}: ${body || err}`);
+				}
+				return resolve(body);
+			});
+		}).
+		then((body) => msg.send(body)).
+		catch((err) => robot.emit("error", err));
 	});
-	robot.respond(/tell me a chuck norris joke$/i, (msg) => {
-		const run = robot.http("https://api.icndb.com/jokes/random")
-			.header("User-Agent", "curl/7.54.0")
-			.header("Accept", "application/json")
-			.get();
 
-		run((err, res, body) => {
-			if (err) {
-				throw new Error(`HTTP Error: ${err}`);
+	robot.respond(/tell me a chuck norris joke$/i, (msg) => {
+		new Promise((resolve) => {
+			robot.http("https://api.icndb.com/jokes/random").
+			header("User-Agent", "curl/7.54.0").
+			header("Accept", "application/json").
+			get()((err, res, body) => {
+				if (err) {
+					throw new Error(`HTTP Error: ${err}`);
+				}
+				if (res.statusCode > 299) {
+					throw new Error(`HTTP ${res.statusCode}: ${body || err}`);
+				}
+				return resolve(body);
+			});
+		}).
+		then((body) => JSON.parse(body)).
+		then((resp) => {
+			if (resp.type === "success" && resp.value && resp.value.joke) {
+				return resp.value.joke;
 			}
-			if (res.statusCode > 299) {
-				throw new Error(`HTTP ${res.statusCode}: ${body || err}`);
-			}
-			const resp = JSON.parse(body);
-			if (resp.type === "success" && resp.value.joke) {
-				msg.send(`:chucknorris: ${resp.value.joke}`);
-				msg.finish();
-				return;
-			}
-			msg.send(body);
-			msg.finish();
-		});
+			throw new Error(`unknown response from api: ${JSON.stringify(resp)}`);
+		}).
+		then((resp) => msg.send(resp)).
+		catch((err) => robot.emit("error", err));
 	});
 };
