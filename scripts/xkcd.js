@@ -14,56 +14,51 @@
 //
 // Author:
 //   blockloop
+const request = require("request-promise-native");
+
 module.exports = function(robot) {
 	robot.respond(/xkcd(\s+latest)?$/i, (msg) => {
-		robot.http("https://xkcd.com/info.0.json").get()((err, res, body) => {
-			if (err) {
-				robot.emit("error", `Error from HTTP: ${err}`);
-			} else if (res.statusCode === 404) {
-				msg.send("Comic not found.");
-			} else if (body) {
-				const object = JSON.parse(body);
-				msg.send(object.title, object.img, object.alt);
-			} else {
-				robot.emit("error", `bad status code from http: (${res.statusCode})`);
-			}
-			msg.finish();
-		});
+		request({
+			uri: "https://xkcd.com/info.0.json",
+			json: true,
+		}).
+		then((resp) => msg.send(resp.title, resp.img, resp.alt)).
+		catch((err) => robot.emit("error", err));
 	});
 
 	robot.respond(/xkcd\s+(\d+)/i, (msg) => {
-		const num = `${msg.match[1]}`;
-		robot.http(`https://xkcd.com/${num}/info.0.json`).get()((err, res, body) => {
-			if (err) {
-				robot.emit("error", `Error from HTTP: ${err}`);
-			} else if (res.statusCode === 404) {
-				msg.send(`Comic ${num} not found.`);
-			} else {
-				const object = JSON.parse(body);
-				msg.send(object.title, object.img, object.alt);
-			}
-		});
+		request({
+			uri: `https://xkcd.com/${msg.match[1]}/info.0.json`,
+			json: true,
+		}).
+		then((resp) => msg.send(resp.title, resp.img, resp.alt)).
+		catch((err) => robot.emit("error", err));
 	});
 
 	robot.respond(/xkcd\s+random/i, (msg) => {
-		robot.http("https://xkcd.com/info.0.json").get()((err, res, body) => {
-			let max, num;
-			if (err != null) {
-				robot.emit("error", `Error from HTTP: ${err}`);
-			} else if (res.statusCode === 404) {
-				max = 0;
-			} else {
-				max = JSON.parse(body).num;
-				num = Math.floor((Math.random() * max) + 1);
-			}
-			robot.http(`https://xkcd.com/${num}/info.0.json`).get()((err, res, body) => {
-				if (err) {
-					robot.emit("error", `Error from HTTP: ${err}`);
-				} else {
-					const object = JSON.parse(body);
-					msg.send(object.title, object.img, object.alt);
-				}
-			});
-		});
+		request({
+			uri: "https://xkcd.com/info.0.json",
+			json: true,
+		}).
+		catch(() => Promise.resolve(1500)).
+		then((resp) => resp.num).
+		then((max) => randomInt(1, max)).
+		then((num) => request({
+			uri: `https://xkcd.com/${num}/info.0.json`,
+			json: true,
+		})).
+		then((resp) => msg.send(resp.title, resp.img, resp.alt)).
+		catch((err) => robot.emit("error", err));
 	});
 };
+
+/**
+ * Get a random integer between `min` and `max`.
+ *
+ * @param {number} min - min number
+ * @param {number} max - max number
+ * @return {number} a random integer
+ **/
+function randomInt(min = 0, max = 100) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}

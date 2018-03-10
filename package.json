@@ -12,7 +12,9 @@
     "hubot-scripts": "^2.5.16",
     "hubot-slack": "^3.3.0",
     "hubot-youtube": "^1.1.0",
-    "moment": "^2.13.0"
+    "moment": "^2.13.0",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
   },
   "engines": {
     "node": "8.2.x"
