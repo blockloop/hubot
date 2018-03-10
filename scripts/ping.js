@@ -29,11 +29,7 @@ module.exports = function(robot) {
 		}
 		msg.send("Goodbye, cruel world...");
 		return setTimeout(() => {
-			return process.exit(0);
+			return process.exit(1);
 		}, 1000);
-	});
-	robot.router.get("/ping", (req, res) => {
-		res.send("PONG", 200);
-		res.end();
 	});
 };
