@@ -42,7 +42,8 @@ module.exports = function(robot) {
 		}).
 		catch(() => Promise.resolve(1500)).
 		then((resp) => resp.num).
-		then((max) => randomInt(1, max)).
+		then((max) => range(1, max)).
+		then((list) => msg.random(list)).
 		then((num) => request({
 			uri: `https://xkcd.com/${num}/info.0.json`,
 			json: true,
@@ -50,15 +51,16 @@ module.exports = function(robot) {
 		then((resp) => msg.send(resp.title, resp.img, resp.alt)).
 		catch((err) => robot.emit("error", err));
 	});
+
 };
 
 /**
- * Get a random integer between `min` and `max`.
+ * range - create a range of numbers
  *
  * @param {number} min - min number
  * @param {number} max - max number
- * @return {number} a random integer
+ * @return {Int32Array} a range of numbers
  **/
-function randomInt(min = 0, max = 100) {
-	return Math.floor(Math.random() * (max - min + 1) + min);
+function range(min = 0, max = 1000) {
+	return Int32Array.from(Array(max).keys()).slice(min);
 }
