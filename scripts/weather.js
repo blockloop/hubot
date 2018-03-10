@@ -16,10 +16,12 @@
 //   kyleslattery
 //   awaxa
 //
+const request = require("request-promise-native");
 const apiKey = process.env.HUBOT_DARK_SKY_API_KEY || "";
 const defaultLocation = process.env.HUBOT_DARK_SKY_DEFAULT_LOCATION || "Dallas";
 const googleurl = "http://maps.googleapis.com/maps/api/geocode/json";
 const errNoAPIKey = new Error("HUBOT_DARK_SKY_API_KEY is not configured");
+
 
 module.exports = function(robot) {
 	robot.respond(/weather ?(.+)?/i, (msg) => {
@@ -50,35 +52,25 @@ module.exports = function(robot) {
  * @returns {Promise} - promise that resolves to {name: "Dallas", lat: <lattitude>, lng: <longitude>}
  */
 function getLocation(msg, location) {
-	const q = {
-		sensor: false,
-		address: location
-	};
-	return new Promise((resolve, reject) => {
-		msg.http(googleurl).query(q).get()((err, res, body) => {
-			if (err) {
-				reject(err);
-			} else if (res.statusCode > 299) {
-				reject(new Error(`HTTP ${res.statusCode}: ${body || err}`));
-			} else {
-				resolve(body);
-			}
-		});
+	request({
+		uri: googleurl,
+		q: {
+			sensor: false,
+			address: location
+		},
 	}).
-	then((body) => JSON.parse(body).results).
+	then((res) => res.results || []).
 	then((res) => {
-		if (!Array.isArray(res) || res.length < 1) {
-			throw new Error(`Couldn't find ${location}`);
+		if (res.length < 1) {
+			return Promise.reject(new Error(`Couldn't find ${location}`));
 		}
-		const locationName = res[0].formatted_address;
-		const lat = res[0].geometry.location.lat;
-		const lng = res[0].geometry.location.lng;
-		return {
-			name: locationName,
-			lat: lat,
-			lng: lng,
-		};
-	});
+		return res[0];
+	}).
+	then((loc) => Promise.resolve({
+		name: loc.formatted_address,
+		lat: loc.geometry.location.lat,
+		lng: loc.geometry.location.lng,
+	}));
 }
 
 /**
@@ -91,22 +83,13 @@ function getLocation(msg, location) {
  * @returns {Promise} - promise that resolves to {Object} darksky response
  */
 function getWeather(msg, loc) {
-	const url = `https://api.darksky.net/forecast/${apiKey}/${loc.lat},${loc.lng}`;
-	return new Promise((resolve, reject) => {
-		msg.http(url).get()((err, res, body) => {
-			if (err) {
-				return reject(err);
-			}
-			if (res.statusCode > 299) {
-				return reject(new Error(`HTTP ${res.statusCode}: ${body || err}`));
-			}
-			return resolve(body);
-		});
+	request({
+		uri: `https://api.darksky.net/forecast/${apiKey}/${loc.lat},${loc.lng}`,
+		json: true,
 	}).
-	then((body) => JSON.parse(body)).
 	then((result) => {
 		if (result.error) {
-			throw new Error(result.error);
+			return Promise.reject(result.error);
 		}
 		return {
 			weather: result,

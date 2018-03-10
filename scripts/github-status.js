@@ -13,18 +13,18 @@
 // Author:
 //   Brett Jones
 const moment = require("moment");
+const request = require("request-promise-native");
 
 module.exports = function(robot) {
 	robot.respond(/github status(.*)/i, (msg) => {
-		msg.http("https://status.github.com/api/last-message.json").get()((err, res, body) => {
-			if (err) {
-				robot.emit("error", new Error(err));
-				msg.send(`ERROR: ${err}`);
-				return;
-			}
-			const status = JSON.parse(body);
-			const pretty = moment(status.created_on).fromNow();
-			msg.send(`:github_octocat: : ${status.body} (updated ${pretty})`);
-		});
+		request({
+			uri: "https://status.github.com/api/last-message.json",
+			json: true,
+		}).
+		then((res) => {
+			const pretty = moment(res.created_on).fromNow();
+			msg.send(`:github_octocat: : ${res.body} (updated ${pretty})`);
+		}).
+		catch((err) => robot.emit("error", err));
 	});
 };
