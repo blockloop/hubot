@@ -24,7 +24,7 @@ module.exports = function(robot) {
 	robot.router.get("/hubot/version", (req, res) => {
 		return res.end(robot.version);
 	});
-	robot.router.post("/hubot/ping", (req, res) => {
+	robot.router.get("/hubot/ping", (req, res) => {
 		return res.end("PONG");
 	});
 	robot.router.get("/hubot/time", (req, res) => {
