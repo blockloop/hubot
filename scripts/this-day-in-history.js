@@ -47,7 +47,7 @@ function getThisDayInHistoryLive(robot) {
 	then((raw) => cheerio.load(raw)).
 	then(($) => Object.assign({
 		title: $("h2.title").text().trim(),
-		body: $("article.article").text().trim(),
+		body: $("article.article").text().trim().split("\n")[0],
 		link: uri,
 		year: $("strong.year").text().trim(),
 	}));
