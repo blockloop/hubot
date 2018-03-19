@@ -1,12 +1,18 @@
 // Description:
 //   Get an Aqua Teen Hunger Force quote
 //
+// Dependencies:
+//   request-promise-native
+//   cheerio
+//
 // Commands:
 //   hubot athf quote
 //   hubot aqua teen hunger force quote
 //   hubot quote athf
 //   hubot quote aqua teen hunger force
 //
+// Author:
+//   blockloop
 const request = require("request-promise-native");
 const cheerio = require("cheerio");
 const urls = [1, 2, 3, 4, 5, 6, 7].map((n) => `https://en.wikiquote.org/wiki/Aqua_Teen_Hunger_Force_(Season_${n})`);
