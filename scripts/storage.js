@@ -3,6 +3,7 @@
 //
 // Commands:
 //   hubot show storage - Display the contents that are persisted in the brain
+//   hubot show user <user> - Display the contents that are persisted in the brain
 module.exports = function(robot) {
 	robot.respond(/show storage$/i, (msg) => {
 		const codeBlock = "```";
