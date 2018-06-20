@@ -22,21 +22,20 @@ module.exports = function(robot) {
 			return;
 		}
 
-		const users = robot.brain.data.users || [];
-		const found = Object.values(users).filter((user) => {
+		const found = Object.values(robot.brain.data.users)
+		.filter((user) => {
 			return `${user.name || ""} ${user.email_address || ""} ${user.real_name || ""}`
 				.trim()
 				.toLowerCase()
 				.includes(query);
-		}) || [];
+		});
 
-		if (found.length === 0) {
-			msg.send(`could not find ${query}`);
-			return;
-		}
+		found.forEach((user) => {
+			const codeBlock = "```";
+			const output = JSON.stringify(user, null, 4);
+			msg.send(`${codeBlock}\n${output}\n${codeBlock}`);
+		})
 
-		const codeBlock = "```";
-		const output = JSON.stringify(found, null, 4);
-		msg.send(`${codeBlock}${output}${codeBlock}`);
+		msg.send(`Found ${found.length} users matching "${query}"`);
 	});
 };
