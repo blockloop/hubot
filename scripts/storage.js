@@ -15,20 +15,28 @@ module.exports = function(robot) {
 	});
 
 
-	robot.respond(/show user (.*)$/i, (msg) => {
-		const query = msg.match[1];
-		const users = robot.brain.data.users;
-		const id = Object.keys(users).find((key) => {
-			return users[key].name === query;
-		});
+	robot.respond(/show user ([^ ]+)$/i, (msg) => {
+		const query = msg.match[1].toLowerCase().trim();
+		if (query.length < 3) {
+			msg.send(`query length must be > 2`)
+			return;
+		}
 
-		if (!id) {
+		const users = robot.brain.data.users || [];
+		const found = Object.values(users).filter((user) => {
+			return `${user.name || ""} ${user.email_address || ""} ${user.real_name || ""}`
+				.trim()
+				.toLowerCase()
+				.includes(query);
+		}) || [];
+
+		if (found.length === 0) {
 			msg.send(`could not find ${query}`);
 			return;
 		}
 
 		const codeBlock = "```";
-		const output = JSON.stringify(users[id], null, 4);
+		const output = JSON.stringify(found, null, 4);
 		msg.send(`${codeBlock}${output}${codeBlock}`);
 	});
 };
