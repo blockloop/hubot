@@ -18,23 +18,23 @@ module.exports = function(robot) {
 	robot.respond(/show user ([^ ]+)$/i, (msg) => {
 		const query = msg.match[1].toLowerCase().trim();
 		if (query.length < 3) {
-			msg.send(`query length must be > 2`)
+			msg.send("query length must be > 2");
 			return;
 		}
 
-		const found = Object.values(robot.brain.data.users)
-		.filter((user) => {
-			return `${user.name || ""} ${user.email_address || ""} ${user.real_name || ""}`
-				.trim()
-				.toLowerCase()
-				.includes(query);
+		const found = Object.values(robot.brain.data.users).
+		filter((user) => {
+			return `${user.name || ""} ${user.email_address || ""} ${user.real_name || ""}`.
+			trim().
+			toLowerCase().
+			includes(query);
 		});
 
 		found.forEach((user) => {
 			const codeBlock = "```";
 			const output = JSON.stringify(user, null, 4);
 			msg.send(`${codeBlock}\n${output}\n${codeBlock}`);
-		})
+		});
 
 		msg.send(`Found ${found.length} users matching "${query}"`);
 	});
