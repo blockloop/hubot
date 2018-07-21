@@ -52,7 +52,7 @@ module.exports = function(robot) {
  * @returns {Promise} - promise that resolves to {name: "Dallas", lat: <lattitude>, lng: <longitude>}
  */
 function getLocation(msg, location) {
-	request({
+	return request({
 		uri: googleurl,
 		q: {
 			sensor: false,
@@ -83,7 +83,7 @@ function getLocation(msg, location) {
  * @returns {Promise} - promise that resolves to {Object} darksky response
  */
 function getWeather(msg, loc) {
-	request({
+	return request({
 		uri: `https://api.darksky.net/forecast/${apiKey}/${loc.lat},${loc.lng}`,
 		json: true,
 	}).
