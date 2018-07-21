@@ -74,5 +74,6 @@ function checkCustom(q, robot, msg) {
 function prettyUptime(seconds) {
 	const date = new Date(null);
 	date.setSeconds(seconds / 1000);
-	return date.toISOString().substr(11, 8);
+	return date.toISOString().
+		substr(11, 8);
 }

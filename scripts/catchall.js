@@ -26,34 +26,35 @@ module.exports = function(robot) {
 			reject("CLEVERBOT_IO_API_KEY and CLEVERBOT_IO_API_USER must be set to use cleverbot");
 		}
 	}).
-	then((cbot) => {
-		cbot.setNick("hubot");
-		return cbot;
-	}).
-	then((cbot) => {
-		return new Promise((resolve, reject) => {
-			cbot.create((err, res) => {
-				if (err) {
-					reject(`cleverbot init: ${err}`);
-				} else {
-					resolve(cbot);
-				}
+		then((cbot) => {
+			cbot.setNick("hubot");
+			return cbot;
+		}).
+		then((cbot) => {
+			return new Promise((resolve, reject) => {
+				cbot.create((err, res) => {
+					if (err) {
+						reject(`cleverbot init: ${err}`);
+					} else {
+						resolve(cbot);
+					}
 
+				});
 			});
+		}).
+		then((cbot) => {
+			console.log(`[${new Date().
+				toString()}] cleverboty ready`);
+			return cbot;
+		}).
+		then((cbot) => {
+			robot.catchAll((msg) => {
+				catchAllHandler(robot, cbot, msg);
+			});
+		}).
+		catch((err) => {
+			robot.emit("error", err);
 		});
-	}).
-	then((cbot) => {
-		console.log(`[${new Date().toString()}] cleverboty ready`);
-		return cbot;
-	}).
-	then((cbot) => {
-		robot.catchAll((msg) => {
-			catchAllHandler(robot, cbot, msg);
-		});
-	}).
-	catch((err) => {
-		robot.emit("error", err);
-	});
 };
 
 function catchAllHandler(robot, cbot, msg) {
@@ -61,7 +62,8 @@ function catchAllHandler(robot, cbot, msg) {
 	let msgText = msg.message.text || "";
 	const atMe = r.test(msgText);
 	if (atMe) {
-		msgText = msgText.replace(r, "you").trim();
+		msgText = msgText.replace(r, "you").
+			trim();
 	}
 	const username = msg.message.user == null
 		? null

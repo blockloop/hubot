@@ -16,8 +16,8 @@ module.exports = function(robot) {
 				Accept: "*/*",
 			},
 		}).
-		then((resp) => msg.send(resp)).
-		catch((err) => robot.emit("error", err));
+			then((resp) => msg.send(resp)).
+			catch((err) => robot.emit("error", err));
 	});
 
 	robot.respond(/tell me a chuck norris joke$/i, (msg) => {
@@ -29,13 +29,13 @@ module.exports = function(robot) {
 				Accept: "application/json",
 			},
 		}).
-		then((resp) => {
-			if (resp.type === "success" && resp.value && resp.value.joke) {
-				return resp.value.joke;
-			}
-			return Promise.reject(JSON.stringify(resp));
-		}).
-		then((resp) => msg.send(resp)).
-		catch((err) => robot.emit("error", err));
+			then((resp) => {
+				if (resp.type === "success" && resp.value && resp.value.joke) {
+					return resp.value.joke;
+				}
+				return Promise.reject(JSON.stringify(resp));
+			}).
+			then((resp) => msg.send(resp)).
+			catch((err) => robot.emit("error", err));
 	});
 };

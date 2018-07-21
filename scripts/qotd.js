@@ -22,9 +22,11 @@ module.exports = function(robot) {
 
 function wikiQuote(robot, msg) {
 	loadURL(robot, "https://en.wikiquote.org/wiki/Wikiquote:Quote_of_the_day").
-	then(($) => $("table table").text().trim()).
-	then((quote) => msg.send(quote)).
-	catch((err) => robot.emit("error", err));
+		then(($) => $("table table").
+			text().
+			trim()).
+		then((quote) => msg.send(quote)).
+		catch((err) => robot.emit("error", err));
 }
 
 function loadURL(robot, url) {
@@ -36,6 +38,6 @@ function loadURL(robot, url) {
 			Accept: "text/html,application/xhtml+xml",
 		},
 	}).
-	then((raw) => cheerio.load(raw));
+		then((raw) => cheerio.load(raw));
 }
 

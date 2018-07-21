@@ -19,20 +19,20 @@ module.exports = function(robot) {
 
 function thisDayInHistory(robot, msg) {
 	getThisDayInHistory(robot).
-	then((item) => msg.send(item.title, item.link, item.body)).
-	catch((err) => robot.emit("error", err));
+		then((item) => msg.send(item.title, item.link, item.body)).
+		catch((err) => robot.emit("error", err));
 }
 
 function getThisDayInHistory(robot) {
 	return getThisDayInHistoryCache(robot).
-	catch(() => getThisDayInHistoryLive(robot)).
-	then((liveData) => {
-		robot.brain.set(brainKey, {
-			date: Date.now(),
-			data: liveData,
+		catch(() => getThisDayInHistoryLive(robot)).
+		then((liveData) => {
+			robot.brain.set(brainKey, {
+				date: Date.now(),
+				data: liveData,
+			});
+			return liveData;
 		});
-		return liveData;
-	});
 }
 
 function getThisDayInHistoryLive(robot) {
@@ -44,13 +44,20 @@ function getThisDayInHistoryLive(robot) {
 			Accept: "text/html,application/xhtml+xml",
 		},
 	}).
-	then((raw) => cheerio.load(raw)).
-	then(($) => Object.assign({
-		title: $("h2.title").text().trim(),
-		body: $("article.article").text().trim().split("\n")[0],
-		link: uri,
-		year: $("strong.year").text().trim(),
-	}));
+		then((raw) => cheerio.load(raw)).
+		then(($) => Object.assign({
+			title: $("h2.title").
+				text().
+				trim(),
+			body: $("article.article").
+				text().
+				trim().
+				split("\n")[0],
+			link: uri,
+			year: $("strong.year").
+				text().
+				trim(),
+		}));
 }
 
 function getThisDayInHistoryCache(robot) {

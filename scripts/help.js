@@ -29,11 +29,14 @@ module.exports = function(robot) {
 		msg.send(emit);
 	});
 	robot.router.get(`/${robot.name}/help`, (req, res) => {
-		const cmds = robot.helpCommands().map((cmd) => {
-			return cmd.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-		});
-		const emit = `<p>${cmds.join("</p><p>")}</p>`
-			.replace(/hubot/ig, `<b>${robot.name}</b>`);
+		const cmds = robot.helpCommands().
+			map((cmd) => {
+				return cmd.replace(/&/g, "&amp;").
+					replace(/</g, "&lt;").
+					replace(/>/g, "&gt;");
+			});
+		const emit = `<p>${cmds.join("</p><p>")}</p>`.
+			replace(/hubot/ig, `<b>${robot.name}</b>`);
 		res.setHeader("content-type", "text/html");
 		res.end(helpContents(robot.name, emit));
 	});

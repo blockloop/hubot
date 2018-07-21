@@ -33,17 +33,18 @@ module.exports = function(robot) {
 	robot.router.get("/hubot/info", (req, res) => {
 		const child = spawn("/bin/sh", ["-c", "echo I\\'m $LOGNAME@$(hostname):$(pwd) \\($(git rev-parse HEAD)\\)"]);
 		child.stdout.on("data", (data) => {
-			res.end(`${data.toString().trim()} running node ${process.version} [pid: ${process.pid}]`);
+			res.end(`${data.toString().
+				trim()} running node ${process.version} [pid: ${process.pid}]`);
 			return child.stdin.end();
 		});
 	});
 	robot.router.get("/hubot/ip", (req, res) => {
 		request("http://icanhazip.com").
-		then((body) => res.end(body)).
-		catch((err) => {
-			res.end(JSON.stringify(err));
-			robot.emit("error", err);
-		});
+			then((body) => res.end(body)).
+			catch((err) => {
+				res.end(JSON.stringify(err));
+				robot.emit("error", err);
+			});
 	});
 };
 

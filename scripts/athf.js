@@ -27,24 +27,25 @@ module.exports = function(robot) {
 
 function athfQuote(robot, msg) {
 	getQuote(robot).
-	then((quote) => msg.send(quote)).
-	catch((err) => robot.emit("error", err));
+		then((quote) => msg.send(quote)).
+		catch((err) => robot.emit("error", err));
 }
 
 function getQuote(robot) {
 	const url = random(urls);
 	return loadURLCache(robot, url).
-	catch(() => {
-		return loadURLLive(robot, url).
-		then((data) => {
-			robot.brain.set(`athf.${url}`, data);
-			return data;
+		catch(() => {
+			return loadURLLive(robot, url).
+				then((data) => {
+					robot.brain.set(`athf.${url}`, data);
+					return data;
+				});
+		}).
+		then(($) => {
+			const r = random($("#mw-content-text dl"));
+			return $(r).
+				text();
 		});
-	}).
-	then(($) => {
-		const r = random($("#mw-content-text dl"));
-		return $(r).text();
-	});
 }
 
 function loadURLCache(robot, url) {
@@ -65,7 +66,7 @@ function loadURLLive(robot, url) {
 			Accept: "text/html,application/xhtml+xml",
 		},
 	}).
-	then((raw) => cheerio.load(raw));
+		then((raw) => cheerio.load(raw));
 }
 
 /**

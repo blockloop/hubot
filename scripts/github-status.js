@@ -21,10 +21,11 @@ module.exports = function(robot) {
 			uri: "https://status.github.com/api/last-message.json",
 			json: true,
 		}).
-		then((res) => {
-			const pretty = moment(res.created_on).fromNow();
-			msg.send(`:github_octocat: : ${res.body} (updated ${pretty})`);
-		}).
-		catch((err) => robot.emit("error", err));
+			then((res) => {
+				const pretty = moment(res.created_on).
+					fromNow();
+				msg.send(`:github_octocat: : ${res.body} (updated ${pretty})`);
+			}).
+			catch((err) => robot.emit("error", err));
 	});
 };

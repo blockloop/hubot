@@ -13,7 +13,8 @@
 // Author:
 //   Brett Jones
 
-const unacceptable = Object.keys(require("os")).concat(["name", "version", "deal", "problem"]);
+const unacceptable = Object.keys(require("os")).
+	concat(["name", "version", "deal", "problem"]);
 
 module.exports = function(robot) {
 	robot.respond(/your (.+) is (.+)/i, (msg) => {

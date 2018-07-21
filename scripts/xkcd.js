@@ -22,8 +22,8 @@ module.exports = function(robot) {
 			uri: "https://xkcd.com/info.0.json",
 			json: true,
 		}).
-		then((resp) => msg.send(resp.title, resp.img, resp.alt)).
-		catch((err) => robot.emit("error", err));
+			then((resp) => msg.send(resp.title, resp.img, resp.alt)).
+			catch((err) => robot.emit("error", err));
 	});
 
 	robot.respond(/xkcd\s+(\d+)/i, (msg) => {
@@ -31,8 +31,8 @@ module.exports = function(robot) {
 			uri: `https://xkcd.com/${msg.match[1]}/info.0.json`,
 			json: true,
 		}).
-		then((resp) => msg.send(resp.title, resp.img, resp.alt)).
-		catch((err) => robot.emit("error", err));
+			then((resp) => msg.send(resp.title, resp.img, resp.alt)).
+			catch((err) => robot.emit("error", err));
 	});
 
 	robot.respond(/xkcd\s+random/i, (msg) => {
@@ -40,16 +40,16 @@ module.exports = function(robot) {
 			uri: "https://xkcd.com/info.0.json",
 			json: true,
 		}).
-		catch(() => Promise.resolve(1500)).
-		then((resp) => resp.num).
-		then((max) => range(1, max)).
-		then((list) => msg.random(list)).
-		then((num) => request({
-			uri: `https://xkcd.com/${num}/info.0.json`,
-			json: true,
-		})).
-		then((resp) => msg.send(resp.title, resp.img, resp.alt)).
-		catch((err) => robot.emit("error", err));
+			catch(() => Promise.resolve(1500)).
+			then((resp) => resp.num).
+			then((max) => range(1, max)).
+			then((list) => msg.random(list)).
+			then((num) => request({
+				uri: `https://xkcd.com/${num}/info.0.json`,
+				json: true,
+			})).
+			then((resp) => msg.send(resp.title, resp.img, resp.alt)).
+			catch((err) => robot.emit("error", err));
 	});
 
 };
@@ -62,5 +62,7 @@ module.exports = function(robot) {
  * @return {Int32Array} a range of numbers
  **/
 function range(min = 0, max = 1000) {
-	return Int32Array.from(Array(max).keys()).slice(min);
+	return Int32Array.from(Array(max).
+		keys()).
+		slice(min);
 }
