@@ -55,7 +55,7 @@ module.exports = function(robot) {
 function getLocation(msg, location) {
 	return request({
 		uri: googleurl,
-		q: {
+		qs: {
 			sensor: false,
 			address: location
 		},
