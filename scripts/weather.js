@@ -31,7 +31,6 @@ module.exports = function(robot) {
 		}
 
 		const location = msg.match[1] || defaultLocation;
-		console.log(`DEBUG: requesting location for ${location}`);
 		getLocation(msg, location).
 			then((loc) => getWeather(msg, loc)).
 			then(({weather, loc}) => {
@@ -42,7 +41,10 @@ module.exports = function(robot) {
 				];
 				msg.send(lines.join("\n"));
 			}).
-			catch((err) => robot.emit("error", err));
+			catch((err) => {
+				robot.emit("error", err);
+				msg.send(`Error trying to lookup weather: ${err}`);
+			});
 	});
 };
 
@@ -55,6 +57,7 @@ module.exports = function(robot) {
 function getLocation(msg, location) {
 	return request({
 		uri: googleurl,
+		json: true,
 		qs: {
 			sensor: false,
 			address: location
