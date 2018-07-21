@@ -13,8 +13,7 @@
 //   hubot weather <location> - Get the weather for <location>
 //
 // Author:
-//   kyleslattery
-//   awaxa
+//   blockloop
 //
 const request = require("request-promise-native");
 const apiKey = process.env.HUBOT_DARK_SKY_API_KEY || "";
@@ -93,7 +92,7 @@ function getWeather(msg, loc) {
 	}).
 		then((result) => {
 			if (result.error) {
-				return Promise.reject(result.error);
+				return Promise.reject(`darksky failed: ${result.error}`);
 			}
 			return {
 				weather: result,

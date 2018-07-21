@@ -10,7 +10,7 @@
 //
 // Author:
 //   blockloop
-const util = require("util");
+
 const apiuser = process.env.CLEVERBOT_IO_API_USER;
 const apikey = process.env.CLEVERBOT_IO_API_KEY;
 const Cleverbot = require("cleverbot.io");
@@ -43,11 +43,7 @@ module.exports = function(robot) {
 			});
 		}).
 		then((cbot) => {
-			console.log(`[${new Date().
-				toString()}] cleverboty ready`);
-			return cbot;
-		}).
-		then((cbot) => {
+			robot.logger.info("cleverboty ready");
 			robot.catchAll((msg) => {
 				catchAllHandler(robot, cbot, msg);
 			});
