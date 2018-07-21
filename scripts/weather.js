@@ -19,7 +19,7 @@
 const request = require("request-promise-native");
 const apiKey = process.env.HUBOT_DARK_SKY_API_KEY || "";
 const defaultLocation = process.env.HUBOT_DARK_SKY_DEFAULT_LOCATION || "Dallas";
-const googleurl = "http://maps.googleapis.com/maps/api/geocode/json";
+const googleurl = "https://maps.googleapis.com/maps/api/geocode/json";
 const errNoAPIKey = new Error("HUBOT_DARK_SKY_API_KEY is not configured");
 
 
@@ -31,17 +31,18 @@ module.exports = function(robot) {
 		}
 
 		const location = msg.match[1] || defaultLocation;
+		console.log(`DEBUG: requesting location for ${location}`);
 		getLocation(msg, location).
-		then((loc) => getWeather(msg, loc)).
-		then(({weather, loc}) => {
-			const lines = [
-				`In ${loc.name} it's currently ${Math.round(weather.currently.temperature)}°F and ${weather.currently.summary}`,
-				`${weather.hourly.summary}`,
-				`${weather.daily.summary}`
-			];
-			msg.send(lines.join("\n"));
-		}).
-		catch((err) => robot.emit("error", err));
+			then((loc) => getWeather(msg, loc)).
+			then(({weather, loc}) => {
+				const lines = [
+					`In ${loc.name} it's currently ${Math.round(weather.currently.temperature)}°F and ${weather.currently.summary}`,
+					`${weather.hourly.summary}`,
+					`${weather.daily.summary}`
+				];
+				msg.send(lines.join("\n"));
+			}).
+			catch((err) => robot.emit("error", err));
 	});
 };
 
@@ -59,18 +60,18 @@ function getLocation(msg, location) {
 			address: location
 		},
 	}).
-	then((res) => res.results || []).
-	then((res) => {
-		if (res.length < 1) {
-			return Promise.reject(new Error(`Couldn't find ${location}`));
-		}
-		return res[0];
-	}).
-	then((loc) => Promise.resolve({
-		name: loc.formatted_address,
-		lat: loc.geometry.location.lat,
-		lng: loc.geometry.location.lng,
-	}));
+		then((res) => res.results || []).
+		then((res) => {
+			if (res.length < 1) {
+				return Promise.reject(new Error(`Couldn't find ${location}`));
+			}
+			return res[0];
+		}).
+		then((loc) => Promise.resolve({
+			name: loc.formatted_address,
+			lat: loc.geometry.location.lat,
+			lng: loc.geometry.location.lng,
+		}));
 }
 
 /**
@@ -87,13 +88,13 @@ function getWeather(msg, loc) {
 		uri: `https://api.darksky.net/forecast/${apiKey}/${loc.lat},${loc.lng}`,
 		json: true,
 	}).
-	then((result) => {
-		if (result.error) {
-			return Promise.reject(result.error);
-		}
-		return {
-			weather: result,
-			loc: loc,
-		};
-	});
+		then((result) => {
+			if (result.error) {
+				return Promise.reject(result.error);
+			}
+			return {
+				weather: result,
+				loc: loc,
+			};
+		});
 }
