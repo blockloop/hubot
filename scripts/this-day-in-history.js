@@ -19,7 +19,7 @@ module.exports = function(robot) {
 
 function thisDayInHistory(robot, msg) {
 	getThisDayInHistory(robot).
-		then((item) => msg.send(item.title, item.link, item.body)).
+		then((item) => msg.send(item.title, item.link)).
 		catch((err) => robot.emit("error", err));
 }
 
