@@ -19,5 +19,5 @@ packages:
 		-v "$(CURDIR):$(CURDIR):z" \
 		-w "$(CURDIR)" \
 		$(NODE_IMAGE) \
-		npm i
+		npm install --save
 
