@@ -1,4 +1,4 @@
-FROM node:8-stretch
+FROM docker.io/node:8-stretch
 
 RUN mkdir /app
 
