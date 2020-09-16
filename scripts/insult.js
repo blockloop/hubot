@@ -145,7 +145,7 @@ const insults = [
 ]
 
 module.exports = (robot) => {
-  robot.hear(/insult/i, (msg) => {
+  robot.respond(/insult/i, (msg) => {
     msg.send(msg.random(insults))
   })
 }
