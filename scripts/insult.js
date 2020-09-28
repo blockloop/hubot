@@ -148,14 +148,23 @@ module.exports = (robot) => {
 	robot.respond(/insult (.+)/i, (msg) => {
 		let who = msg.match[1].trim();
 		const insult = msg.random(insults);
+		if (/^(yourself|hubot|you)/.test(who)) {
+			msg.reply("I would, but I think too highly of myself");
+			return;
+		}
+
 		if (/^me$/.test(who)) {
 			msg.reply(insult);
 			return;
 		}
-		if (/^someone$/.test(who)) {
-			const id =msg.random(Object.keys(robot.brain.data.users));
-			who = robot.brain.data.users[id].name;
+
+		if (/^(someone|somebody|anyone)$/.test(who)) {
+			const active = Object.values(robot.brain.data.users).
+				filter((user) => !user.deleted);
+
+			who = msg.random(active).name;
 		}
+
 		msg.send(`${who}, ${insult}`);
 	});
 };

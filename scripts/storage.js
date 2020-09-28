@@ -4,9 +4,11 @@
 // Commands:
 //   hubot show storage - Display the contents that are persisted in the brain
 //   hubot show user <user> - Display the contents that are persisted in the brain
+//
+const codeBlock = "```";
+
 module.exports = function(robot) {
 	robot.respond(/show storage$/i, (msg) => {
-		const codeBlock = "```";
 		const data = Object.assign({}, robot.brain.data);
 		Reflect.deleteProperty(data, "users");
 
@@ -15,18 +17,23 @@ module.exports = function(robot) {
 	});
 
 	robot.respond(/show users/i, (msg) => {
-		msg.send(JSON.stringify(robot.brain.data.users, undefined, 4));
+		const users = Object.values(robot.brain.data.users).
+			filter((user) => !user.deleted);
+
+		const output = JSON.stringify(users, undefined, 4);
+		msg.send(`${codeBlock}${output}${codeBlock}`);
 	});
 
 	robot.respond(/show user ([^ ]+)$/i, (msg) => {
 		const query = msg.match[1].toLowerCase().
 			trim();
 		if (query.length < 3) {
-			msg.send("query length must be > 2");
+			msg.reply("query length must be > 2");
 			return;
 		}
 
 		const found = Object.values(robot.brain.data.users).
+			filter((user) => !user.deleted).
 			filter((user) => {
 				return `${user.name || ""} ${user.email_address || ""} ${user.real_name || ""}`.
 					trim().
