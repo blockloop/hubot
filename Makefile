@@ -21,3 +21,5 @@ packages:
 		$(NODE_IMAGE) \
 		npm install --save
 
+build:
+	podman build . -t registry.gitlab.com/blockloop/hubot:$(shell git rev-parse --short HEAD)

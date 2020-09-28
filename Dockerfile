@@ -8,6 +8,12 @@ ADD package-lock.json /app/package-lock.json
 ADD package.json /app/package.json
 ADD scripts /app/scripts
 
+RUN useradd -d /app --shell /bin/bash hubot && \
+	chown -R hubot /app && \
+	chmod -R 0700 /app
+
+USER hubot
+
 WORKDIR /app
 ENV PATH "$$PATH:/usr/local/bin:/app/node_modules/.bin"
 RUN /usr/local/bin/npm install
