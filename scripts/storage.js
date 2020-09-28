@@ -14,6 +14,9 @@ module.exports = function(robot) {
 		msg.send(`${codeBlock}${output}${codeBlock}`);
 	});
 
+	robot.respond(/show users/i, (msg) => {
+		msg.send(JSON.stringify(robot.brain.data.users, undefined, 4));
+	});
 
 	robot.respond(/show user ([^ ]+)$/i, (msg) => {
 		const query = msg.match[1].toLowerCase().
