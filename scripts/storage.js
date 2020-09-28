@@ -18,7 +18,8 @@ module.exports = function(robot) {
 
 	robot.respond(/show users/i, (msg) => {
 		const users = Object.values(robot.brain.data.users).
-			filter((user) => !user.deleted);
+			filter((user) => !(user.slack && user.slack.deleted));
+
 
 		const output = JSON.stringify(users, undefined, 4);
 		msg.send(`${codeBlock}${output}${codeBlock}`);
@@ -33,7 +34,7 @@ module.exports = function(robot) {
 		}
 
 		const found = Object.values(robot.brain.data.users).
-			filter((user) => !user.deleted).
+			filter((user) => !(user.slack && user.slack.deleted)).
 			filter((user) => {
 				return `${user.name || ""} ${user.email_address || ""} ${user.real_name || ""}`.
 					trim().

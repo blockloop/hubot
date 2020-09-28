@@ -160,7 +160,7 @@ module.exports = (robot) => {
 
 		if (/^(someone|somebody|anyone)$/.test(who)) {
 			const active = Object.values(robot.brain.data.users).
-				filter((user) => !user.deleted);
+				filter((user) => !(user.slack && user.slack.deleted));
 
 			who = msg.random(active).name;
 		}
