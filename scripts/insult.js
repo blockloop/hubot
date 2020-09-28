@@ -162,7 +162,7 @@ module.exports = (robot) => {
 			const active = Object.values(robot.brain.data.users).
 				filter((user) => !(user.slack && user.slack.deleted));
 
-			who = msg.random(active).name;
+			who = `@${msg.random(active).name}`;
 		}
 
 		msg.send(`${who}, ${insult}`);
