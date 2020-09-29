@@ -18,11 +18,11 @@ module.exports = function(robot) {
 
 	robot.respond(/show users/i, (msg) => {
 		const users = Object.values(robot.brain.data.users).
-			filter((user) => !(user.slack && user.slack.deleted));
-
-
-		const output = JSON.stringify(users, undefined, 4);
-		msg.send(`${codeBlock}${output}${codeBlock}`);
+			filter((user) => !(user.slack && user.slack.deleted)).
+			forEach((user) => {
+				const output = JSON.stringify(user, undefined, 4);
+				msg.send(`${codeBlock}${output}${codeBlock}`);
+			});
 	});
 
 	robot.respond(/show user ([^ ]+)$/i, (msg) => {
