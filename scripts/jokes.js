@@ -38,4 +38,23 @@ module.exports = function(robot) {
 			then((resp) => msg.send(resp)).
 			catch((err) => robot.emit("error", err));
 	});
+
+	robot.respond(/what would donald say$/i, (msg) => {
+		request({
+			uri: "https://matchilling-tronald-dump-v1.p.rapidapi.com/random/quote",
+			json: true,
+			headers: {
+				"x-rapidapi-key": "3ea2fed63cmshc335228a747c30ep1cf185jsn831e9e9bec99",
+				Accept: "application/json",
+			},
+		}).
+			then((resp) => {
+				if (resp.type === "success" && resp.value && resp.value.value) {
+					return resp.value.value;
+				}
+				return Promise.reject(JSON.stringify(resp));
+			}).
+			then((resp) => msg.send(resp)).
+			catch((err) => robot.emit("error", err));
+	});
 };
