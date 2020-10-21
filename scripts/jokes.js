@@ -50,8 +50,8 @@ module.exports = function(robot) {
 			},
 		}).
 			then((resp) => {
-				if (resp.type === "success" && resp.value && resp.value.value) {
-					return resp.value.value;
+				if (resp.value) {
+					return resp.value;
 				}
 				return Promise.reject(JSON.stringify(resp));
 			}).
