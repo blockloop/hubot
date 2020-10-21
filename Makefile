@@ -1,6 +1,9 @@
 
 NODE_IMAGE := $(shell grep 'FROM' Dockerfile | cut -d' ' -f2)
 
+build:
+	podman build . -t registry.gitlab.com/blockloop/hubot:$(shell git rev-parse --short HEAD)
+
 run:
 	podman run \
 		--rm \
@@ -21,5 +24,3 @@ packages:
 		$(NODE_IMAGE) \
 		npm install --save
 
-build:
-	podman build . -t registry.gitlab.com/blockloop/hubot:$(shell git rev-parse --short HEAD)
