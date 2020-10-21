@@ -22,3 +22,7 @@ In the interactive shell hubot is referred to as simply `hubot` (without the
 @). If your script requires environment variables then you should add them to
 the hubot.env file before executing `make run`. This file has been commited but
 it is ignored so you cannot accidentally commit changes to it.
+
+It is also important that you add the appropriate comment headers to your
+scripts so that the usage of your script shows up in the `hubot help` commands.
+See any of the existing scripts for examples of how to document your script.

@@ -3,6 +3,7 @@
 //
 // Commands:
 //   hubot tell me a (dad )joke - Reply with a joke
+//   hubot what would donald say - Reply with a Donald Trump quote
 //
 const request = require("request-promise-native");
 const apikey = process.env.HUBOT_DONALD_API_KEY;
