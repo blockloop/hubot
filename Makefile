@@ -1,22 +1,27 @@
 
-NODE_IMAGE := $(shell grep 'FROM' Dockerfile | cut -d' ' -f2)
+NODE_IMAGE  := $(shell grep 'FROM' Dockerfile | cut -d' ' -f2)
+OCI_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker)
+
+ifeq ($(OCI_RUNTIME),)
+$(error either podman or docker are required)
+endif
 
 build:
-	podman build . -t registry.gitlab.com/blockloop/hubot:$(shell git rev-parse --short HEAD)
+	$(OCI_RUNTIME) build . \
+		-t registry.gitlab.com/blockloop/hubot:$(shell git rev-parse --short HEAD)
 
 run:
-	podman run \
+	$(OCI_RUNTIME) run \
 		--rm \
 		-it \
 		-v "$(CURDIR):$(CURDIR):z" \
 		-w "$(CURDIR)" \
-		-e "CLEVERBOT_IO_API_KEY=BzuwFFJooFKzbQlDk99SwriuVZdmZtq9" \
-		-e "CLEVERBOT_IO_API_USER=BCW2ZJew4HHgKYQ1" \
+		--env-file hubot.env \
 		--entrypoint $(PWD)/bin/hubot \
 		$(NODE_IMAGE)
 
 packages:
-	podman run \
+	$(OCI_RUNTIME) run \
 		--rm \
 		-it \
 		-v "$(CURDIR):$(CURDIR):z" \
