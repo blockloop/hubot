@@ -16,6 +16,5 @@ USER hubot
 
 WORKDIR /app
 ENV PATH "$$PATH:/usr/local/bin:/app/node_modules/.bin"
-RUN /usr/local/bin/npm install
 
 ENTRYPOINT /app/bin/hubot --adapter slack
