@@ -1,18 +1,14 @@
 # http://editorconfig.org
-root = true
+root = false
 
 [*]
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*]
+[*.js]
 indent_style = tab
 indent_size = 8
-
-[*.coffee]
-indent_style = space
-indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
