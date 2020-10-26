@@ -3,8 +3,10 @@
 //
 // Commands:
 //   hubot tell me a (dad )joke - Reply with a joke
+//   hubot what would donald say - Reply with a Donald Trump quote
 //
 const request = require("request-promise-native");
+const apikey = process.env.HUBOT_DONALD_API_KEY;
 
 module.exports = function(robot) {
 	robot.respond(/tell me a (dad )?joke$/i, (msg) => {
@@ -32,6 +34,25 @@ module.exports = function(robot) {
 			then((resp) => {
 				if (resp.type === "success" && resp.value && resp.value.joke) {
 					return resp.value.joke;
+				}
+				return Promise.reject(JSON.stringify(resp));
+			}).
+			then((resp) => msg.send(resp)).
+			catch((err) => robot.emit("error", err));
+	});
+
+	robot.respond(/what would donald say$/i, (msg) => {
+		request({
+			uri: "https://matchilling-tronald-dump-v1.p.rapidapi.com/random/quote",
+			json: true,
+			headers: {
+				"x-rapidapi-key": apikey,
+				Accept: "application/json",
+			},
+		}).
+			then((resp) => {
+				if (resp.value) {
+					return resp.value;
 				}
 				return Promise.reject(JSON.stringify(resp));
 			}).
