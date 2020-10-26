@@ -15,6 +15,7 @@
 
 const fs = require("fs");
 const fortunesFile = process.env.FORTUNES_FILE || "";
+const codeBlock = "```";
 
 module.exports = (robot) => {
 	responder(robot)
@@ -38,7 +39,15 @@ function responder(robot) {
 	return readFortunes()
 		.then((data) => {
 			robot.logger.info(`using fortunes file ${fortunesFile}...`);
-			return (msg) => msg.send(msg.random(data.split("%\n")));
+			return (msg) => {
+				msg.send(
+					[
+						codeBlock,
+						msg.random(data.split("%\n")),
+						codeBlock,
+					].join("\n")
+				);
+			};
 		})
 		.catch((err) => {
 			const m = `fortunes file is unreadable. Fortunes disabled. ${err.message}`;
