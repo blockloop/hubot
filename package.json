@@ -14,11 +14,10 @@
     "hubot-youtube": "^1.1.0",
     "moment": "^2.13.0",
     "request-promise-native": "^1.0.5",
-    "random-fortune": "^0.2.0",
     "verb-check": "^1.2.3"
   },
   "engines": {
-    "node": "8.2.x"
+    "node": "12.19.x"
   },
   "devDependencies": {
     "eslint": "^4.19.1"
