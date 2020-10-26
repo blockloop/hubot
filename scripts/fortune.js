@@ -25,8 +25,11 @@ module.exports = (robot) => {
 function readFortunes() {
 	return new Promise((resolve, reject) => {
 		fs.readFile(fortunesFile, "utf8", (err, data) => {
-			if (err) reject(err);
-			resolve(data);
+			if (err) {
+				reject(err);
+			} else {
+				resolve(data);
+			}
 		});
 	});
 }
