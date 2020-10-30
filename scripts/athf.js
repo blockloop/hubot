@@ -18,21 +18,21 @@ const cheerio = require("cheerio");
 const urls = [1, 2, 3, 4, 5, 6, 7].map((n) => `https://en.wikiquote.org/wiki/Aqua_Teen_Hunger_Force_(Season_${n})`);
 
 module.exports = function(robot) {
-	const respond = (msg) => athfQuote(robot, msg);
+	const respond = (res) => athfQuote(robot, res);
 	robot.respond(/aqua teen hunger force(?: quote)/i, respond);
 	robot.respond(/athf(?: quote)/i, respond);
 	robot.respond(/quote aqua teen hunger force/i, respond);
 	robot.respond(/quote athf/i, respond);
 };
 
-function athfQuote(robot, msg) {
-	getQuote(robot).
-		then((quote) => msg.send(quote)).
+function athfQuote(robot, res) {
+	getQuote(robot, res).
+		then((quote) => res.send(quote)).
 		catch((err) => robot.emit("error", err));
 }
 
-function getQuote(robot) {
-	const url = random(urls);
+function getQuote(robot, res) {
+	const url = res.random(urls);
 	return loadURLCache(robot, url).
 		catch(() => {
 			return loadURLLive(robot, url).
@@ -42,7 +42,7 @@ function getQuote(robot) {
 				});
 		}).
 		then(($) => {
-			const r = random($("#mw-content-text dl"));
+			const r = res.random($("#mw-content-text dl"));
 			return $(r).
 				text();
 		});
@@ -67,26 +67,4 @@ function loadURLLive(robot, url) {
 		},
 	}).
 		then((raw) => cheerio.load(raw));
-}
-
-/**
- * randomly choose an item from the array
- * @param {Array} a items An array containing the items.
- * @return {Object} random item from the array
- */
-function random(a) {
-	return shuffle(a)[0];
-}
-
-/**
- * Shuffles array in place. ES6 version
- * @param {Array} a items An array containing the items.
- * @return {Array} array shuffled
- */
-function shuffle(a) {
-	for (let i = a.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[a[i], a[j]] = [a[j], a[i]];
-	}
-	return a;
 }

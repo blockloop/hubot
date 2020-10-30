@@ -8,28 +8,28 @@
 const codeBlock = "```";
 
 module.exports = function(robot) {
-	robot.respond(/show storage$/i, (msg) => {
+	robot.respond(/show (storage|brain)$/i, (res) => {
 		const data = Object.assign({}, robot.brain.data);
 		Reflect.deleteProperty(data, "users");
 
 		const output = JSON.stringify(data, null, 4);
-		msg.send(`${codeBlock}${output}${codeBlock}`);
+		res.send(`${codeBlock}${output}${codeBlock}`);
 	});
 
-	robot.respond(/show users/i, (msg) => {
-		const users = Object.values(robot.brain.data.users).
+	robot.respond(/show users/i, (res) => {
+		Object.values(robot.brain.data.users).
 			filter((user) => !(user.slack && user.slack.deleted)).
 			forEach((user) => {
 				const output = JSON.stringify(user, undefined, 4);
-				msg.send(`${codeBlock}${output}${codeBlock}`);
+				res.send(`${codeBlock}${output}${codeBlock}`);
 			});
 	});
 
-	robot.respond(/show user ([^ ]+)$/i, (msg) => {
-		const query = msg.match[1].toLowerCase().
+	robot.respond(/show user ([^ ]+)$/i, (res) => {
+		const query = res.match[1].toLowerCase().
 			trim();
 		if (query.length < 3) {
-			msg.reply("query length must be > 2");
+			res.reply("query length must be > 2");
 			return;
 		}
 
@@ -45,9 +45,9 @@ module.exports = function(robot) {
 		found.forEach((user) => {
 			const codeBlock = "```";
 			const output = JSON.stringify(user, null, 4);
-			msg.send(`${codeBlock}\n${output}\n${codeBlock}`);
+			res.send(`${codeBlock}\n${output}\n${codeBlock}`);
 		});
 
-		msg.send(`Found ${found.length} users matching "${query}"`);
+		res.send(`Found ${found.length} users matching "${query}"`);
 	});
 };
