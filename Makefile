@@ -1,10 +1,11 @@
 
 NODE_IMAGE  := $(shell grep 'FROM' Dockerfile | cut -d' ' -f2)
-OCI_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker || echo "docker or podman")
+OCI_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker 2>/dev/null || echo -n /usr/local/bin/docker)
+IMG_REPO    := ghcr.io/blockloop
 
 build: $(OCI_RUNTIME)
 	$(OCI_RUNTIME) build . \
-		-t ghcr.io/blockloop/hubot:$(shell git rev-parse --short HEAD)
+		-t $(IMG_REPO)/hubot:$(shell git rev-parse --short HEAD)
 
 run: $(OCI_RUNTIME)
 	$(OCI_RUNTIME) run \
