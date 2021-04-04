@@ -10,7 +10,7 @@
     "hubot": "^3.1.1",
     "hubot-redis-brain": "^1.0.0",
     "hubot-scripts": "^2.5.16",
-    "hubot-slack": "^4.5.5",
+    "hubot-slack": "^4.9.0",
     "hubot-youtube": "^1.1.0",
     "moment": "^2.13.0",
     "request-promise-native": "^1.0.5",
