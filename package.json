@@ -6,7 +6,7 @@
   "description": "Personalized hubot",
   "dependencies": {
     "cheerio": "^1.0.0-rc.5",
-    "cleverbot-free": "^1.0.4",
+    "cleverbot-free": "^1.0.5",
     "hubot": "^3.1.1",
     "hubot-redis-brain": "^1.0.0",
     "hubot-scripts": "^2.5.16",
