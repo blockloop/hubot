@@ -1,4 +1,4 @@
 [
-  "hubot-redis-brain",
+  "@throneless/hubot-file-brain",
   "hubot-youtube"
 ]

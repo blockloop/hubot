@@ -5,10 +5,10 @@
   "author": "blockloop@users.noreply.github.com",
   "description": "Personalized hubot",
   "dependencies": {
+    "@throneless/hubot-file-brain": "^0.2.0",
     "cheerio": "^1.0.0-rc.10",
     "cleverbot-free": "^1.1.6",
     "hubot": "^3.1.1",
-    "hubot-redis-brain": "^1.0.0",
     "hubot-scripts": "^2.5.16",
     "hubot-slack": "^4.9.0",
     "hubot-youtube": "^1.2.1",
