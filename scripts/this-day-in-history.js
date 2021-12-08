@@ -19,7 +19,10 @@ module.exports = function(robot) {
 
 function thisDayInHistory(robot, msg) {
 	getThisDayInHistory(robot).
-		then((item) => msg.send(item.title, item.link)).
+		then((item) => {
+			const text = item.body.split(".")[0];
+			msg.send(text+".", "", item.link);
+		}).
 		catch((err) => robot.emit("error", err));
 }
 
@@ -46,18 +49,23 @@ function getThisDayInHistoryLive(robot) {
 	}).
 		then((raw) => cheerio.load(raw)).
 		then(($) => Object.assign({
-			title: $("h2.title").
+			title: $("h1").
 				text().
 				trim(),
-			body: $("article.article").
+			body: $("div.m-detail--body").
 				text().
 				trim().
 				split("\n")[0],
-			link: uri,
+			link: $("div.m-detail--citation-meta:nth-child(5) > p:nth-child(2) > a:nth-child(1)").
+				attr("href"),
 			year: $("strong.year").
 				text().
 				trim(),
-		}));
+		})).
+		then((data) => {
+			console.log(data);
+			return data;
+		});
 }
 
 function getThisDayInHistoryCache(robot) {
