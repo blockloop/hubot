@@ -1,5 +1,6 @@
 FROM docker.io/node:14-alpine
 
+RUN apk add dumb-init
 RUN mkdir /app
 WORKDIR /app
 RUN chown 1000 /app \
@@ -20,5 +21,5 @@ ENV PATH "$$PATH:/usr/local/bin:/app/node_modules/.bin"
 RUN /usr/local/bin/npm install
 
 USER 1000
-ENTRYPOINT /app/bin/hubot
-CMD ["--adapter", "slack"]
+ENTRYPOINT "/usr/bin/dumb-init"
+CMD ["/app/bin/hubot"]
