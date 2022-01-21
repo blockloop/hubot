@@ -9,6 +9,7 @@
     "cheerio": "^1.0.0-rc.10",
     "cleverbot-free": "^1.1.6",
     "hubot": "^3.1.1",
+    "hubot-discord": "^2.1.0",
     "hubot-scripts": "^2.5.16",
     "hubot-slack": "^4.9.0",
     "hubot-youtube": "^1.2.2",
