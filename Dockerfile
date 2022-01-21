@@ -20,4 +20,5 @@ ENV PATH "$$PATH:/usr/local/bin:/app/node_modules/.bin"
 RUN /usr/local/bin/npm install
 
 USER 1000
-ENTRYPOINT /app/bin/hubot --adapter slack
+ENTRYPOINT /app/bin/hubot
+CMD ["--adapter", "slack"]
