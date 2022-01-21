@@ -12,7 +12,7 @@
 
 const contextKey = "cleverbot-context";
 const cleverbot = require("cleverbot-free");
-const verbCheck = require("verb-check");
+const verbs = require("verb-corpus");
 
 
 module.exports = function(robot) {
@@ -47,7 +47,7 @@ module.exports = function(robot) {
 						return false;
 					}
 					const word = sentence.match(toMeAtMeRe)[3];
-					const res = verbCheck.check(word);
+					const res = !!verbs.find(x => x === word);
 					robot.logger.info(`verb check result for ${JSON.stringify(sentence)}: ${res}. Tested ${JSON.stringify(word)}`);
 					return res;
 				};

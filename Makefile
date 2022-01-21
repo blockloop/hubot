@@ -4,7 +4,7 @@ OCI_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker || ech
 
 build: $(OCI_RUNTIME)
 	$(OCI_RUNTIME) build . \
-		-t registry.gitlab.com/blockloop/hubot:$(shell git rev-parse --short HEAD)
+		-t ghcr.io/blockloop/hubot:$(shell git rev-parse --short HEAD)
 
 run: $(OCI_RUNTIME)
 	$(OCI_RUNTIME) run \
