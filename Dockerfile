@@ -21,5 +21,5 @@ ENV PATH "$$PATH:/usr/local/bin:/app/node_modules/.bin"
 RUN /usr/local/bin/npm install
 
 USER 1000
-ENTRYPOINT "/usr/bin/dumb-init"
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["/app/bin/hubot"]
