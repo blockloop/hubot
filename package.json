@@ -13,7 +13,7 @@
     "hubot-scripts": "^2.5.16",
     "hubot-slack": "^4.9.0",
     "hubot-youtube": "^1.2.2",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "request-promise-native": "^1.0.9",
     "verb-corpus": "^1.6.1"
   },
