@@ -7,7 +7,7 @@
   "dependencies": {
     "@throneless/hubot-file-brain": "^0.2.0",
     "cheerio": "^1.0.0-rc.10",
-    "cleverbot-free": "^1.1.7",
+    "cleverbot-free": "^1.1.11",
     "hubot": "^3.1.1",
     "hubot-discord": "^2.1.0",
     "hubot-scripts": "^2.5.16",
