@@ -15,7 +15,7 @@
     "hubot-youtube": "^1.2.2",
     "moment": "^2.29.1",
     "request-promise-native": "^1.0.9",
-    "verb-corpus": "^1.6.1"
+    "verb-corpus": "^3.3.0"
   },
   "engines": {
     "node": "12.19.x"
